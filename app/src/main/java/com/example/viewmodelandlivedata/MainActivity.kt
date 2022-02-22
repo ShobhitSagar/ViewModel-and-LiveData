@@ -2,31 +2,34 @@ package com.example.viewmodelandlivedata
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import com.example.viewmodelandlivedata.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var vb : ActivityMainBinding
-    var score: Int = 0
+    lateinit var scoreVM: ScoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vb = ActivityMainBinding.inflate(layoutInflater)
         setContentView(vb.root)
 
+        scoreVM = ViewModelProvider(this).get(ScoreViewModel::class.java)
+
+        vb.scoreTextView.text = scoreVM.getScore().toString()
+
         vb.addScoreButton.setOnClickListener { addScore() }
         vb.resetScoreButton.setOnClickListener { resetScore() }
-
-        resetScore()
-    }
-
-    private fun resetScore() {
-        score = 0
-        vb.scoreTextView.text = "$score"
     }
 
     private fun addScore() {
-        score++
-        vb.scoreTextView.text = "$score"
+        scoreVM.addScore()
+        vb.scoreTextView.text = "${scoreVM.getScore()}"
+    }
+
+    private fun resetScore() {
+        scoreVM.resetScore()
+        vb.scoreTextView.text = "${scoreVM.getScore()}"
     }
 }
